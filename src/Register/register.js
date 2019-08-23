@@ -9,6 +9,9 @@ import { Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-
 
 // Register Class
 
+
+
+
 class Register extends Component {
 
     // --------------------------------------------- state ----------------------------------------------
@@ -41,12 +44,12 @@ class Register extends Component {
         e.preventDefault()
         console.log(this.state)
         const data  = new FormData()
-        data.append('email', this.state.email)
-        data.append('username', this.state.username)
-        data.append('password', this.state.password)
-        data.append('confirmPass', this.state.confirmPass)
-        data.append('city', this.state.city)
-        data.append('state', this.state.state)
+        data.append('email',        this.state.email)
+        data.append('username',     this.state.username)
+        data.append('password',     this.state.password)
+        data.append('confirmPass',  this.state.confirmPass)
+        data.append('city',         this.state.city)
+        data.append('state',        this.state.state)
 
         console.log(data.entries(), ' this is data')
         for (let pair of data.entries()){
@@ -96,6 +99,7 @@ class Register extends Component {
     }
 
 }
+
 
 
 

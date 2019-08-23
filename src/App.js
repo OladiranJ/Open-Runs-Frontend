@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import logo                 from './logo.svg'
 import Login                from './Login/login'
 import Register             from './Register/register'
+import Vitals               from './Vitals/vitals'
 import { Route, Switch }    from 'react-router-dom'
 import './App.css'
 import { async } from 'q';
@@ -69,6 +70,18 @@ class App extends Component {
 
   }
 
+  // --------------------------------------------- register ---------------------------------------------
+
+  submitVitals = async (data) => {
+
+    try {
+      
+    } catch (error) {
+      
+    }
+
+  }
+
   // ---------------------------------------------- render ----------------------------------------------
 
   render () {
@@ -79,6 +92,7 @@ class App extends Component {
         <Switch>
           <Route exact path='/' render={(props) => <Login {...props} logIn={this.logIn} />} />
           <Route exact path='/register' render={(props) => <Register {...props} register={this.register} />} />
+          <Route exact path='/register/vitals' render={(props) => <Vitals {...props} submitVitals={this.submitVitals} />} />
           <Route component={My404} />
         </Switch>
       </main>
