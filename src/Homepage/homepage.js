@@ -40,7 +40,7 @@ class Homepage extends Component {
                         </Header>
                         <List ordered>
                             <List.Item>
-                                <Image avatar src='open-runs-frontend/public/bonecollector.jpg' />
+                                <Image circular size='small' src='open-runs-frontend/public/bonecollector.jpg' />
                                 <List.Content>
                                     <List.Header>Bone Collector</List.Header>
                                     <Rating defaultRating={5} maxRating={5} disabled />
