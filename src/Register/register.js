@@ -75,6 +75,7 @@ class Register extends Component {
         const registerCall  = this.props.register(data)
 
         registerCall.then((data) => {
+            console.log(data)
             if(data.status.message === "Success"){
                 this.props.history.push('/register/vitals')
               } else {
