@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { Link }             from 'react-router-dom'
 import { Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-react'
+import { async } from 'q';
 
 
 
@@ -13,7 +14,7 @@ import { Button, Form, Grid, Header, Image, Message, Segment} from 'semantic-ui-
 
 
 
-const height = [
+const heights = [
 
     { key:  '1', text:   "5'4",     value:  "5'4" },
     { key:  '2', text:   "5'5",     value:  "5'5" },
@@ -41,7 +42,7 @@ const height = [
 
 ]
 
-const weight = [
+const weights = [
 
     { key:  'a', text:   '120 - 130 lbs',   value:  '120 - 130 lbs' },
     { key:  'b', text:   '130 - 140 lbs',   value:  '130 - 140 lbs' },
@@ -102,25 +103,28 @@ class Vitals extends Component {
         weight:     '',
         priPos:     '',
         secPos:     '',
-        priSkill:   '',
-        secSkill:   '',   
-        tertSkill:  ''
+        primary:    '',
+        secondary:  '',   
+        tertiary:   ''
 
     }
 
     // ------------------------------------------ handleChange ------------------------------------------
 
-    handleChange = (e) => {
-
+    handleChange = (e, data) => {
+        
+        // console.log(e.target.children[0].innerText)
+        console.log(data)
+        
         this.setState({
-            [e.target.name]: e.target.value
+            [data.name]: data.value
         })
 
     }
 
     // ------------------------------------------ handleSubmit ------------------------------------------
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
 
         e.preventDefault()
         console.log(this.state)
@@ -130,13 +134,38 @@ class Vitals extends Component {
         data.append('weight',       this.state.weight)
         data.append('priPos',       this.state.priPos)
         data.append('secPos',       this.state.secPos)
-        data.append('priSkill',     this.state.priSkill)
-        data.append('secSkill',     this.state.secSkill)
-        data.append('tertSkill',    this.state.tertSkill)
+        data.append('primary',     this.state.primary)
+        data.append('secondary',     this.state.secondary)
+        data.append('tertiary',    this.state.tertiary)
 
         console.log(data.entries(), ' this is data')
         for (let pair of data.entries()){
             console.log(pair[0]  ,', ', pair[1])
+        }
+
+        try {
+
+            const vitalsResponse    = await fetch(`process.env.REACT_APP_BACKEND_URL/user/${data.id}`,  {
+                method:         'POST',
+                credentials:    'include',
+                body:           data,
+                headers:        {
+                    'enctype':  'multipart/form-data'
+                }
+            })
+            
+            const parsedResponse    = await vitalsResponse.json()
+
+            this.setState({
+                ...parsedResponse.data,
+                loading:    false
+            })
+            return parsedResponse
+            
+        } catch (error) {
+
+            console.log(error)
+            
         }
 
     }
@@ -155,21 +184,21 @@ class Vitals extends Component {
                     <Form>
                         <Segment stacked>
                             <Form.Group widths='equal'>
-                                <Form.Select fluid name='height' label='Height:' options={height} placeholder='choose height' />
-                                <Form.Select fluid name='priSkill' label='Primary Skill:' options={skills} placeholder='choose skill' />
+                                <Form.Select fluid name='height' label='Height:' options={heights} placeholder='choose height' value={this.state.height} onChange={(e, data) => this.handleChange(e, data)} />
+                                <Form.Select fluid name='primary' label='Primary Skill:' options={skills} placeholder='choose skill' value={this.state.primary} onChange={(e, data) => this.handleChange(e, data)} />
                             </Form.Group>
                             <Form.Group widths='equal'>
-                                <Form.Select fluid name='weight' label='Weight:' options={weight} placeholder='choose weight' />
-                                <Form.Select fluid name='secSkill' label='Secondary Skill:' options={skills} placeholder='choose skill' />
+                                <Form.Select fluid name='weight' label='Weight:' options={weights} placeholder='choose weight' value={this.state.weight} onChange={(e, data) => this.handleChange(e, data)} />
+                                <Form.Select fluid name='secondary' label='Secondary Skill:' options={skills} placeholder='choose skill' value={this.state.secondary} onChange={(e, data) => this.handleChange(e, data)} />
                             </Form.Group>
                             <Form.Group widths='equal'>
-                                <Form.Select fluid name='priPos' label='Primary Position:' options={positions} placeholder='choose position' />
-                                <Form.Select fluid name='tertSkill' label='Tertiary Skill:' options={skills} placeholder='choose skill' />
+                                <Form.Select fluid name='priPos' label='Primary Position:' options={positions} placeholder='choose position' value={this.state.priPos} onChange={(e, data) => this.handleChange(e, data)} />
+                                <Form.Select fluid name='tertiary' label='Tertiary Skill:' options={skills} placeholder='choose skill' value={this.state.tertiary} onChange={(e, data) => this.handleChange(e, data)} />
                             </Form.Group>
                             <Form.Group widths='two'>
-                                <Form.Select fluid name='secPos' label='Secondary Position:' options={positions} placeholder='choose position' />
+                                <Form.Select fluid name='secPos' label='Secondary Position:' options={positions} placeholder='choose position' value={this.state.secPos} onChange={(e, data) => this.handleChange(e, data)} />
                             </Form.Group>
-                                <Button primary compact widths='three' size='large' type='submit'>Start Hoopin!</Button>
+                                <Button primary compact widths='three' size='large' type='submit' onClick={this.handleSubmit}>Start Hoopin!</Button>
                         </Segment>
                     </Form>
                 </Grid.Column>

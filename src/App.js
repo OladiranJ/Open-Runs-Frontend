@@ -5,9 +5,15 @@ import logo                 from './logo.svg'
 import Login                from './Login/login'
 import Register             from './Register/register'
 import Vitals               from './Vitals/vitals'
+import Homepage             from './Homepage/homepage'
+import Profile              from './Profile/profile'
+import Edit                 from './Editprofile/editprofile'
+import SavedParks           from './Savedparks/savedparks'
+import FindPlayers          from './Findplayers/findplayers'
 import { Route, Switch }    from 'react-router-dom'
+import { async }            from 'q'
 import './App.css'
-import { async } from 'q';
+
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -41,6 +47,7 @@ class App extends Component {
     username: '',
     email:    '',
     image:    '',
+    id: '',
     loading:  true
 
   }
@@ -61,14 +68,32 @@ class App extends Component {
   // --------------------------------------------- register ---------------------------------------------
 
   register  = async (data) => {
-
-    try {
-      
-    } catch (error) {
-      
-    }
-
-  }
+      try {
+        console.log('registering')
+        console.log(data)
+       const registerResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/register`, {
+         method: 'POST',
+         credentials: 'include',
+         body: data,
+         headers: {
+           'enctype': 'multipart/form-data'
+         }
+       })
+       console.log('finished fetching')
+       const parsedResponse = await registerResponse.json();
+ 
+       console.log(parsedResponse)
+ 
+       this.setState({
+         ...parsedResponse.data,
+         loading: false
+       })
+       return parsedResponse;
+ 
+     } catch (err) {
+       console.log(err)
+     }
+   }
 
   // --------------------------------------------- register ---------------------------------------------
 
@@ -88,11 +113,15 @@ class App extends Component {
 
     return (
       <main>
-        Wassup My Guy!
         <Switch>
           <Route exact path='/' render={(props) => <Login {...props} logIn={this.logIn} />} />
           <Route exact path='/register' render={(props) => <Register {...props} register={this.register} />} />
-          <Route exact path='/register/vitals' render={(props) => <Vitals {...props} submitVitals={this.submitVitals} />} />
+          <Route exact path='/register/vitals' render={(props) => <Vitals {...props} submitVitals={this.submitVitals} />} id={this.state.id}/>
+          <Route exact path='/home' render={(props) => <Homepage />} />
+          <Route exact path='/profile' render={(props) => <Profile />} />
+          <Route exact path='/profile/edit' render={(props) => <Edit />} />
+          <Route exact path='/savedparks' render={(props) => <SavedParks />} />
+          <Route exact path='/findplayers' render={(props) => <FindPlayers />} />
           <Route component={My404} />
         </Switch>
       </main>
