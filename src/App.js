@@ -14,7 +14,7 @@ import { Route, Switch }    from 'react-router-dom'
 import { async }            from 'q'
 import './App.css'
 
-
+console.log(process.env)
 
 // ------------------------------------------------------------------------------------------------------
 
