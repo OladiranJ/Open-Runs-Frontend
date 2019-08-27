@@ -43,8 +43,9 @@ class Login extends Component {
         const login = this.props.logIn(this.state)
 
         login.then((data) => {
+            console.log(data)
             if (data.status.message === 'Success') {
-                this.props.history.push('/homepage')
+                this.props.history.push('/home')
             } else {
                 this.setState({
                     message: 'Email or Password Incorrect'

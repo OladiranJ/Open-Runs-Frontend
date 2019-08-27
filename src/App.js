@@ -58,8 +58,31 @@ class App extends Component {
   logIn = async (loginInfo) => {
 
     try {
+
+      const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/login`, {
+        method: 'POST',
+        credentials: 'include',// on every request we have to send the cookie
+        body: JSON.stringify(loginInfo),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      const parsedResponse = await loginResponse.json();
+
+
+      this.setState(() => {
+        return {
+          ...parsedResponse.data,
+          loading: false
+        }
+      })
+
+      return parsedResponse
       
     } catch (error) {
+
+      return error
       
     }
 
@@ -107,6 +130,13 @@ class App extends Component {
 
   }
 
+  updateUser = (user)=>{
+    this.setState({
+      ...user,
+      loading: false
+    })
+  }
+
   // ---------------------------------------------- render ----------------------------------------------
 
   render () {
@@ -116,7 +146,7 @@ class App extends Component {
         <Switch>
           <Route exact path='/' render={(props) => <Login {...props} logIn={this.logIn} />} />
           <Route exact path='/register' render={(props) => <Register {...props} register={this.register} />} />
-          <Route exact path='/register/vitals' render={(props) => <Vitals {...props} submitVitals={this.submitVitals} />} id={this.state.id}/>
+          <Route exact path='/register/vitals' render={(props) => <Vitals {...props} submitVitals={this.submitVitals} id={this.state.id} updateUser={this.updateUser}/>}/>
           <Route exact path='/home' render={(props) => <Homepage />} />
           <Route exact path='/profile' render={(props) => <Profile />} />
           <Route exact path='/profile/edit' render={(props) => <Edit />} />

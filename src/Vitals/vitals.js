@@ -145,8 +145,8 @@ class Vitals extends Component {
 
         try {
 
-            const vitalsResponse    = await fetch(`process.env.REACT_APP_BACKEND_URL/user/${data.id}`,  {
-                method:         'POST',
+            const vitalsResponse    = await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/${this.props.id}`,  {
+                method:         'PUT',
                 credentials:    'include',
                 body:           data,
                 headers:        {
@@ -155,12 +155,14 @@ class Vitals extends Component {
             })
             
             const parsedResponse    = await vitalsResponse.json()
-
-            this.setState({
-                ...parsedResponse.data,
-                loading:    false
-            })
-            return parsedResponse
+            console.log(parsedResponse)
+            this.props.updateUser(parsedResponse.data)
+            this.props.history.push('/home')
+            // this.setState({
+            //     ...parsedResponse.data,
+            //     loading:    false
+            // })
+            // return parsedResponse
             
         } catch (error) {
 
